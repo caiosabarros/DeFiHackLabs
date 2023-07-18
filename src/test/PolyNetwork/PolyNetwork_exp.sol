@@ -59,8 +59,9 @@ contract ContractTest is DSTest {
 
     address exploiter = 0xC8a65Fadf0e0dDAf421F28FEAb69Bf6E2E589963; 
     address EthCrossChainManager =  0x838bf9E95CB12Dd76a54C9f9D2E3082EAF928270;
+    //ME: verifies header and execute the tx
     address EthCrossChainData = 0xcF2afe102057bA5c16f899271045a0A37fCb10f2;
-
+    //ME: at least checks and marks that the tx on-chain Ethereum exists
     CheatCodes cheats = CheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
     function setUp() public {

